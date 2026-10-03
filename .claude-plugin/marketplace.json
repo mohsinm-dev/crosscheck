@@ -9,7 +9,7 @@
       "name": "crosscheck",
       "source": "./",
       "description": "Claude Code and Codex research the same question independently, then verify each other's claims with evidence.",
-      "version": "0.1.0"
+      "version": "0.1.1"
     }
   ]
 }

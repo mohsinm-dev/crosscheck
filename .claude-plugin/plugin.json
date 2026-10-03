@@ -1,7 +1,7 @@
 {
   "$schema": "https://anthropic.com/claude-code/plugin.schema.json",
   "name": "crosscheck",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Have Claude Code and Codex investigate the same question blind, then verify each other's claims with evidence. Reports what each one missed.",
   "author": {
     "name": "crosscheck contributors"
