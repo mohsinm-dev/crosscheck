@@ -136,14 +136,14 @@ export CROSSCHECK_CODEX_PRICE="1.75,0.175,14"   # $ per 1M tokens: input, cached
 
 - **Quote checks prove a quote exists, not that the conclusion is right.** A claim can cite real lines and still misread them. Cross-examination is what catches those.
 - URL and command evidence isn't re-checked yet; only file evidence is.
-- The Claude side is tested against Claude Code 2.1.288. The Codex side is built on the documented `codex exec` flags (`--json`, `--output-schema`, `-o`, `-s read-only`) and tested against a simulated Codex; Codex releases often, so if a flag changes, override the binary with `CROSSCHECK_CODEX_BIN` or open an issue.
+- Tested end to end against Claude Code 2.1.283 and Codex CLI 0.160.0. The Codex side relies on the `codex exec` flags `--json`, `--output-schema`, `-o` and `-s read-only`; Codex releases often, so if a flag changes, override the binary with `CROSSCHECK_CODEX_BIN` or open an issue.
 - One cross-examination round; disputed claims go to a human rather than another round.
 - The eval matcher is keyword-and-file based: transparent, but you need specific keywords.
 
 ## Development
 
 ```bash
-python3 -m unittest discover -s tests -v     # 29 tests, no network, no model calls
+python3 -m unittest discover -s tests -v     # 30 tests, no network, no model calls
 python3 bin/crosscheck run "Why are users logged out?" --repo examples/logout-bug/repo \
   --agents mock:examples/logout-bug/mock/claude,mock:examples/logout-bug/mock/codex --print-report
 python3 bin/crosscheck eval examples/cases.json        # uses the simulated agents in the case file
