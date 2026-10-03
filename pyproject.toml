@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "crosscheck"
+version = "0.1.0"
+description = "Run Claude Code and Codex on the same question blind, then make them verify each other's claims."
+requires-python = ">=3.10"
+dependencies = []
+
+[project.scripts]
+crosscheck = "crosscheck.cli:main"
+
+[tool.setuptools]
+packages = ["crosscheck"]
