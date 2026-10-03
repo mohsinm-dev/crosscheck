@@ -1,0 +1,15 @@
+{
+  "name": "crosscheck",
+  "owner": {
+    "name": "crosscheck contributors"
+  },
+  "description": "Blind two-agent cross-checking for Claude Code and Codex.",
+  "plugins": [
+    {
+      "name": "crosscheck",
+      "source": "./",
+      "description": "Claude Code and Codex research the same question independently, then verify each other's claims with evidence.",
+      "version": "0.1.0"
+    }
+  ]
+}
