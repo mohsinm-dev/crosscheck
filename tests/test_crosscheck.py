@@ -115,8 +115,8 @@ class LedgerTests(unittest.TestCase):
 
     def test_refuting_a_claim_with_good_evidence_is_disputed(self):
         a = [f("A-1", "ttl is 600 seconds", "src/config/session.ts:11", "ttl: 600")]
-        ev = [{"type": "file", "location": "src/config/session.ts:6", "quote": "DAY_MS"}]
-        e = self._run(a, [], [], {"A-1": {"verdict": "refuted", "new_evidence": ev, "reason": "cookie is 24h"}})
+        ev = [{"type": "file", "location": "src/config/session.ts:5", "quote": "SESSION_TTL_SECONDS"}]
+        e = self._run(a, [], [], {"A-1": {"verdict": "refuted", "new_evidence": ev, "reason": "sessions are meant to last 24h"}})
         self.assertEqual(e[0]["status"], "disputed")
         self.assertEqual(ledger.outcome(e, []), "NOT_CONVERGED")
 
@@ -127,7 +127,7 @@ class LedgerTests(unittest.TestCase):
         self.assertEqual((e[0]["status"], e[0]["winner"], e[0]["refuted_members"]), ("verified", "B", ["A-1"]))
 
     def test_unverifiable_unique_stays_single_source(self):
-        a = [f("A-1", "the 24h intent lives only on the cookie", "src/config/session.ts:6", "DAY_MS")]
+        a = [f("A-1", "the 24h constant is never used", "src/config/session.ts:5", "SESSION_TTL_SECONDS")]
         e = self._run(a, [], [], {})
         self.assertEqual(e[0]["status"], "single_source")
 
@@ -201,9 +201,9 @@ class EndToEndMockTests(unittest.TestCase):
     def test_eval_harness(self):
         res = evaluate.run_eval(EX.parent / "cases.json", cluster="heuristic", out_dir=self.tmp, log=lambda m: None)
         a = res["aggregate"]
-        self.assertAlmostEqual(a["recall_A"], 1 / 3)
+        self.assertAlmostEqual(a["recall_A"], 1 / 2)
         self.assertAlmostEqual(a["recall_final"], 1.0)
-        self.assertAlmostEqual(a["recall_baseline"], 2 / 3)
+        self.assertAlmostEqual(a["recall_baseline"], 1 / 2)
         self.assertEqual(a["true_causes_wrongly_rejected"], 0)
         self.assertEqual(a["cases_where_second_agent_added_a_cause"], 1)
 

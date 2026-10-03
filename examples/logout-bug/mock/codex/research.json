@@ -1,18 +1,18 @@
 {
   "_cost_usd": 0.88,
   "findings": [
-    {"id": "F-1", "claim": "The Redis session store TTL is 600 seconds (10 minutes), so server-side sessions expire after 10 minutes regardless of the cookie maxAge.",
+    {"id": "F-1", "claim": "The Redis session store TTL is 600 seconds and the cookie has no maxAge, so connect-redis uses the store ttl and server-side sessions expire after 10 minutes of inactivity.",
      "kind": "cause", "confidence": "high",
      "evidence": [{"type": "file", "location": "src/config/session.ts:8-12", "quote": "ttl: 600, // seconds"}],
-     "would_refute": "connect-redis ignoring the ttl option"},
+     "would_refute": "A cookie maxAge or expires being set (connect-redis then derives the TTL from the cookie)"},
     {"id": "F-2", "claim": "The canary deployment reads SESSION_SECRET from a different Kubernetes secret than the stable deployment, and the Service routes to both, so a session signed by one pod fails verification on the other.",
      "kind": "cause", "confidence": "high",
      "evidence": [{"type": "file", "location": "k8s/deployment-canary.yaml:24-28", "quote": "name: app-secrets"},
                   {"type": "file", "location": "k8s/deployment.yaml:27", "quote": "name: app-secrets-v2"},
                   {"type": "file", "location": "k8s/service.yaml:6-7", "quote": "app: acme-portal"}],
      "would_refute": "Both secrets containing the same session-secret value"},
-    {"id": "F-3", "claim": "rolling is false, so user activity does not extend the session expiry.",
-     "kind": "cause", "confidence": "high",
+    {"id": "F-3", "claim": "rolling is false. That only controls re-sending the cookie; express-session still touches the store on every request, so it is not why sessions expire.",
+     "kind": "fact", "confidence": "high",
      "evidence": [{"type": "file", "location": "src/config/session.ts:15", "quote": "rolling: false,"}],
      "would_refute": "rolling: true in the session options"}
   ],

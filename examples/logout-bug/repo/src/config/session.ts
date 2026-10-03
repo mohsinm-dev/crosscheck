@@ -2,7 +2,7 @@ import session from "express-session";
 import RedisStore from "connect-redis";
 import { redis } from "../lib/redis";
 
-const DAY_MS = 24 * 60 * 60 * 1000;
+export const SESSION_TTL_SECONDS = 24 * 60 * 60; // sessions should last 24 hours
 
 export const sessionMiddleware = session({
   store: new RedisStore({
@@ -15,7 +15,6 @@ export const sessionMiddleware = session({
   rolling: false,
   saveUninitialized: false,
   cookie: {
-    maxAge: DAY_MS,
     secure: true,
     httpOnly: true,
     sameSite: "lax",

@@ -13,8 +13,8 @@ Example report (abridged; this is the bundled demo in `examples/logout-bug`):
 
 | # | Claim                                                        | Found by        | Status   |
 |---|--------------------------------------------------------------|-----------------|----------|
-| 1 | Redis session store ttl is 600s, overriding the 24h cookie   | both            | verified |
-| 2 | rolling is false, so activity never extends the session      | codex (won)     | verified |
+| 1 | Cookie has no maxAge, so the 600s Redis store ttl applies    | both            | verified |
+| 2 | rolling is false, but that is not why sessions expire        | codex (won)     | verified |
 | 3 | Canary pods read SESSION_SECRET from a different k8s secret  | codex only      | verified |
 
 ## What each analyst missed

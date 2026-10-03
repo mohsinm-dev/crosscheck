@@ -1,15 +1,15 @@
 {
   "_cost_usd": 1.42,
   "findings": [
-    {"id": "F-1", "claim": "The Redis session store sets ttl: 600 seconds, which overrides the 24h cookie maxAge, so server-side sessions expire after 10 minutes.",
+    {"id": "F-1", "claim": "The Redis store ttl is 600 seconds and the cookie sets no maxAge, so connect-redis falls back to the store ttl and sessions expire after 10 minutes without a request. SESSION_TTL_SECONDS (24h) is never used.",
      "kind": "cause", "confidence": "high",
      "evidence": [{"type": "file", "location": "src/config/session.ts:11", "quote": "ttl: 600, // seconds"}],
-     "would_refute": "A different ttl being applied at runtime, or Redis keys showing a 24h expiry"},
+     "would_refute": "A cookie maxAge or expires being set, or Redis keys showing a 24h TTL"},
     {"id": "F-2", "claim": "app.set('trust proxy') is never called in src/server.ts, so with cookie secure: true behind the TLS-terminating load balancer the session cookie is dropped.",
      "kind": "cause", "confidence": "medium",
      "evidence": [{"type": "file", "location": "src/server.ts", "quote": ""}],
      "would_refute": "A trust proxy setting anywhere in the app bootstrap"},
-    {"id": "F-3", "claim": "The session config sets rolling: true, so activity keeps refreshing the session expiry.",
+    {"id": "F-3", "claim": "The session config sets rolling: true, so the cookie is re-issued on every response.",
      "kind": "fact", "confidence": "medium",
      "evidence": [{"type": "file", "location": "src/config/session.ts:15", "quote": "rolling: true,"}],
      "would_refute": "rolling set to false"}

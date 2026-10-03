@@ -4,10 +4,8 @@
     "repo": "logout-bug/repo",
     "question": "Why are users logged out after about 10 minutes when sessions should last 24 hours?",
     "ground_truth": [
-      {"id": "redis-ttl", "summary": "Redis store ttl is 600 seconds",
+      {"id": "redis-ttl", "summary": "Cookie has no maxAge, so connect-redis applies the 600-second store ttl",
        "files": ["src/config/session.ts"], "keywords": ["ttl: 600", "600 seconds"]},
-      {"id": "rolling-false", "summary": "rolling: false, so activity never extends the session",
-       "files": ["src/config/session.ts"], "keywords": ["rolling: false", "rolling is false"]},
       {"id": "canary-secret", "summary": "Canary pods use a different SESSION_SECRET and share the Service",
        "files": ["k8s/deployment-canary.yaml", "k8s/deployment.yaml"], "keywords": ["secret"]}
     ],
