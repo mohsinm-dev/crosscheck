@@ -215,7 +215,9 @@ def run(
     cluster_note, cluster_cost = None, None
     mode = cluster
     if mode == "auto":
-        mode = "llm" if check_available(AgentSpec.parse(clusterer)) is None else "heuristic"
+        # Mock runs are meant to be offline and free, so they never call a real clustering model.
+        offline = any(spec.kind == "mock" for spec in specs.values())
+        mode = "llm" if not offline and check_available(AgentSpec.parse(clusterer)) is None else "heuristic"
     if mode == "llm" and findings["A"] and findings["B"]:
         clusters, cluster_cost, err = clustering.cluster_llm(findings["A"], findings["B"], AgentSpec.parse(clusterer), run_dir)
         if clusters is None:
