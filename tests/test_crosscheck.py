@@ -191,6 +191,13 @@ class EndToEndMockTests(unittest.TestCase):
         _, warnings = orchestrator.make_brief("I suspect the Redis TTL. Why are users logged out?")
         self.assertTrue(warnings)
 
+    def test_coverage_hint_ignores_prose_coverage(self):
+        cited = {"src/config/session.ts"}
+        prose = {"examined": ["All nine files in the repository"], "not_examined": []}
+        self.assertEqual(orchestrator._coverage_hint(cited, prose), "")
+        paths = {"examined": ["k8s/service.yaml"], "not_examined": []}
+        self.assertIn("never mentions src/", orchestrator._coverage_hint(cited, paths))
+
     def test_eval_harness(self):
         res = evaluate.run_eval(EX.parent / "cases.json", cluster="heuristic", out_dir=self.tmp, log=lambda m: None)
         a = res["aggregate"]

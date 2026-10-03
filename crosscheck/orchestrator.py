@@ -100,7 +100,9 @@ def _coverage_hint(cited: set[str], coverage: dict) -> str:
         if any(_covers(entry, c) for c in cited):
             return f"it listed \u201c{entry}\u201d as not examined"
     examined = coverage.get("examined") or []
-    if examined and cited and not any(_covers(e, c) for e in examined for c in cited):
+    # Only judge path coverage when the agent listed paths; prose like "all files" can't be matched.
+    listed_paths = any("/" in e or "." in e for e in examined)
+    if listed_paths and cited and not any(_covers(e, c) for e in examined for c in cited):
         tops = sorted({Path(c).parts[0] + ("/" if len(Path(c).parts) > 1 else "") for c in cited if Path(c).parts})
         return f"its coverage never mentions {', '.join(tops)}"
     return ""
