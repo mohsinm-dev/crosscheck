@@ -8,13 +8,16 @@ import subprocess
 import sys
 
 
-def _version(cmd: list[str]) -> str | None:
+def _version(cmd: list[str]) -> tuple[int, str] | None:
+    """(exit code, most useful output line), or None if the command couldn't run."""
     try:
         out = subprocess.run(cmd, capture_output=True, text=True, timeout=20)
     except (OSError, subprocess.TimeoutExpired):
         return None
-    text = (out.stdout or out.stderr).strip().splitlines()
-    return text[0] if text else ""
+    lines = [l.strip() for l in (out.stdout or out.stderr).splitlines() if l.strip()]
+    # A crashing Node CLI prints a stack trace; the "Error: ..." line is the one worth showing.
+    err = next((l for l in lines if l.startswith("Error:")), None)
+    return out.returncode, err or (lines[0] if lines else "")
 
 
 def doctor() -> int:
@@ -28,22 +31,34 @@ def doctor() -> int:
 
     claude = os.environ.get("CROSSCHECK_CLAUDE_BIN", "claude")
     if shutil.which(claude):
-        print(f"[ok] Claude Code: {_version([claude, '--version'])}")
+        v = _version([claude, "--version"])
+        if v and v[0] == 0:
+            print(f"[ok] Claude Code: {v[1]}")
+        else:
+            ok = False
+            print(f"[XX] Claude Code is installed but does not run: {v[1] if v else 'no response'}")
     else:
         ok = False
         print("[XX] Claude Code not found  -> install: npm install -g @anthropic-ai/claude-code")
 
     codex = os.environ.get("CROSSCHECK_CODEX_BIN", "codex")
     if shutil.which(codex):
-        print(f"[ok] Codex CLI: {_version([codex, '--version'])}")
-        status = _version([codex, "login", "status"])
-        if status is None:
-            print("[??] Could not read Codex login status  -> run: codex login")
-        elif "not" in status.lower() and "logged" in status.lower():
+        v = _version([codex, "--version"])
+        if not v or v[0] != 0:
             ok = False
-            print(f"[XX] Codex: {status}  -> run: codex login")
+            msg = v[1] if v else "no response"
+            hint = "" if "reinstall" in msg.lower() else "  -> reinstall: npm install -g @openai/codex@latest"
+            print(f"[XX] Codex CLI is installed but does not run: {msg}{hint}")
         else:
-            print(f"[ok] Codex login: {status}")
+            print(f"[ok] Codex CLI: {v[1]}")
+            status = _version([codex, "login", "status"])
+            if status is None:
+                print("[??] Could not read Codex login status  -> run: codex login")
+            elif status[0] != 0 or ("not" in status[1].lower() and "logged" in status[1].lower()):
+                ok = False
+                print(f"[XX] Codex: {status[1]}  -> run: codex login")
+            else:
+                print(f"[ok] Codex login: {status[1]}")
     else:
         ok = False
         print("[XX] Codex CLI not found  -> install: npm install -g @openai/codex   then: codex login")
