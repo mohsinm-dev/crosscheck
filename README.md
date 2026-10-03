@@ -56,7 +56,7 @@ codex login
 Then, inside Claude Code:
 
 ```
-/plugin marketplace add YOUR_GITHUB_USER/crosscheck
+/plugin marketplace add mohsinm-dev/crosscheck
 /plugin install crosscheck@crosscheck
 /crosscheck:setup
 ```
@@ -96,7 +96,7 @@ Runs are saved in `.crosscheck/runs/<run-id>/` in your project (git-ignored auto
 The engine is a plain CLI, so you can run it from a terminal, CI, or from inside Codex:
 
 ```bash
-pipx install git+https://github.com/YOUR_GITHUB_USER/crosscheck
+pipx install git+https://github.com/mohsinm-dev/crosscheck
 crosscheck doctor
 crosscheck run "Why are users logged out after ~10 minutes?" --repo . --print-report
 ```
