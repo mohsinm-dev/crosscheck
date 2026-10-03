@@ -1,0 +1,12 @@
+{
+  "name": "acme-portal",
+  "version": "3.4.1",
+  "private": true,
+  "scripts": { "start": "node dist/server.js", "build": "tsc" },
+  "dependencies": {
+    "connect-redis": "^7.1.0",
+    "express": "^4.19.2",
+    "express-session": "^1.18.0",
+    "ioredis": "^5.4.1"
+  }
+}

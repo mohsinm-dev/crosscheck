@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: acme-portal-canary
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: acme-portal
+  template:
+    metadata:
+      labels:
+        app: acme-portal
+        track: canary
+    spec:
+      containers:
+        - name: web
+          image: registry.acme.io/acme-portal:3.5.0-rc1
+          ports:
+            - containerPort: 3000
+          env:
+            - name: REDIS_URL
+              value: redis://redis:6379
+            - name: SESSION_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: app-secrets
+                  key: session-secret

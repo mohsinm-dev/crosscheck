@@ -1,0 +1,8 @@
+{
+  "_cost_usd": 0.19,
+  "by_claim": [
+    {"match": "trust proxy", "verdict": "refuted",
+     "new_evidence": [{"type": "file", "location": "src/bootstrap/proxy.ts:5", "quote": "app.set(\"trust proxy\", 1);"}],
+     "reason": "trust proxy is set in src/bootstrap/proxy.ts, which server.ts calls via configureProxy(app)."}
+  ]
+}

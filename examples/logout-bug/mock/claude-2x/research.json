@@ -1,0 +1,14 @@
+{
+  "_cost_usd": 2.61,
+  "findings": [
+    {"id": "F-1", "claim": "The Redis store ttl is 600 seconds, so sessions expire after 10 minutes.",
+     "kind": "cause", "confidence": "high",
+     "evidence": [{"type": "file", "location": "src/config/session.ts:11", "quote": "ttl: 600, // seconds"}],
+     "would_refute": "A different ttl at runtime"},
+    {"id": "F-2", "claim": "rolling is false, so activity does not extend the session.",
+     "kind": "cause", "confidence": "high",
+     "evidence": [{"type": "file", "location": "src/config/session.ts:15", "quote": "rolling: false,"}],
+     "would_refute": "rolling: true"}
+  ],
+  "coverage": {"examined": ["src/"], "not_examined": ["k8s/"]}
+}

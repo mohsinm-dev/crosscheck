@@ -1,0 +1,9 @@
+{
+  "_cost_usd": 0.31,
+  "by_claim": [
+    {"match": "secret", "verdict": "confirmed",
+     "new_evidence": [{"type": "file", "location": "k8s/deployment.yaml:27", "quote": "name: app-secrets-v2"},
+                      {"type": "file", "location": "k8s/deployment-canary.yaml:27", "quote": "name: app-secrets"}],
+     "reason": "Stable pods read app-secrets-v2, canary pods read app-secrets, and the Service selects both by app: acme-portal."}
+  ]
+}
